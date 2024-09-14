@@ -1,0 +1,18 @@
+{
+  "name": "hophacks24",
+  "version": "1.0.0",
+  "description": "new project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd frontend && npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
