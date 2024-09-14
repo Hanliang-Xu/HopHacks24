@@ -1,6 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import './App.css';
+import { readCSVFile } from './readCSVFile';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+
+const colors = [
+  '#FF5733',  // Color 1
+  '#33FF57',  // Color 2
+  '#3357FF',  // Color 3
+  '#FF33A1',  // Color 4
+  '#A133FF',  // Color 5
+  '#33FFF5'   // Color 6
+];
+
+
+// Register the components you need
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user, isLoading, getAccessTokenSilently } = useAuth0();
@@ -8,6 +44,9 @@ function App() {
   const [newComment, setNewComment] = useState(''); // Track new comment input
   const [errorMessage, setErrorMessage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // "Healthcare Coverage Based on Size of Metro"
+  const [sizeOfMetro, setSizeOfMetro] = useState(null);
+  const [racialDemographic, setRacialDemographic] = useState(null);
 
   // Trigger login with audience and scopes
   const handleLogin = () => {
@@ -68,37 +107,128 @@ function App() {
     };
 
     fetchComments();
+
+    const fetchCSVData = async (filePath, setDataCallback) => {
+      try {
+        const data = await readCSVFile(filePath); // Adjust file path
+        const years = data[0].slice(1); // First row is the years
+    
+        const interpolateMissingValues = (arr) => {
+          let result = [...arr];  // Clone the array
+          for (let i = 0; i < result.length; i++) {
+            if (result[i] === '**') {
+              // Find the next valid data point for interpolation
+              let nextValidIndex = i + 1;
+              while (nextValidIndex < result.length && result[nextValidIndex] === '**') {
+                nextValidIndex++;
+              }
+    
+              if (nextValidIndex < result.length && i > 0) {
+                // Linear interpolation: y = y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
+                let y1 = +result[i - 1]; // Previous valid value
+                let y2 = +result[nextValidIndex]; // Next valid value
+                let x1 = i - 1; // Index of the previous valid value
+                let x2 = nextValidIndex; // Index of the next valid value
+                let interpolatedValue = y1 + ((y2 - y1) / (x2 - x1)) * (i - x1);
+    
+                result[i] = interpolatedValue; // Replace missing value with interpolated value
+              }
+            } else {
+              result[i] = +result[i]; // Convert valid values to numbers
+            }
+          }
+          return result;
+        };
+    
+        const datasets = data.slice(1).map((row, index) => ({
+          label: row[0], // First column is the label (e.g., 'a', 'b', 'c')
+          data: interpolateMissingValues(row.slice(1)), // Interpolate missing values
+          borderColor: colors[index % colors.length], // Assign color based on index
+          fill: false,  // Ensure the line isn't filled
+        }));
+    
+        setDataCallback({
+          labels: years,
+          datasets: datasets,
+        });
+      } catch (error) {
+        console.error("Error reading CSV data:", error);
+      }
+    };
+
+
+    fetchCSVData("/urban_county.csv", setSizeOfMetro);
+    fetchCSVData("/racial_demographic.csv", setRacialDemographic);
+
   }, [isLoading, isAuthenticated, user]);
 
-  if (isLoading) {
+  if (isLoading || !sizeOfMetro || !racialDemographic) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="App">
       <header className="App-header">
-        {isAuthenticated ? (
-          <div>
-            <div className="user-info">
-              <span>Welcome, {user.name}</span>
-              <button className="logout-button" onClick={() => logout({ returnTo: window.location.origin })}>
-                Logout
-              </button>
+        <div className="content-container">
+          {/* Scrollable section for charts */}
+          <div className="charts-scrollable">
+            {/* First Chart - urban_county */}
+            <div className="chart-section">
+              <h2>Urban County</h2>
+              <Line data={sizeOfMetro} />
             </div>
+  
+            {/* Second Chart - racial_demographic */}
+            <div className="chart-section">
+              <h2>Racial Demographic</h2>
+              <Line data={racialDemographic} />
+            </div>
+          </div>
+  
+          {/* Right column for user info and discussion */}
+          <div className="discussion-column">
+            {/* Fixed button in the top-right corner */}
+            <div className="user-info">
+              {isAuthenticated ? (
+                <span>
+                  Welcome, {user.name}{' '}
+                  <button
+                    className="logout-button"
+                    onClick={() => logout({ returnTo: window.location.origin })}
+                  >
+                    Logout
+                  </button>
+                </span>
+              ) : (
+                <button className="login-button" onClick={handleLogin}>
+                  Login
+                </button>
+              )}
+            </div>
+  
+            {/* Discussion Forum below the button */}
             <div className="comment-section">
               <h2>Discussion Forum</h2>
               {errorMessage && <div className="error-message">{errorMessage}</div>}
-              <form onSubmit={handleSubmitComment}>
-                <textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Enter your comment"
-                  rows="4"
-                  cols="50"
-                />
-                <br />
-                <button type="submit" disabled={isSubmitting}>Submit Comment</button>
-              </form>
+              {isAuthenticated ? (
+                <form onSubmit={handleSubmitComment}>
+                  <textarea
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Enter your comment"
+                    rows="4"
+                    cols="50"
+                  />
+                  <br />
+                  <button type="submit" disabled={isSubmitting}>
+                    Submit Comment
+                  </button>
+                </form>
+              ) : (
+                <p>Please log in to leave a comment.</p>
+              )}
+  
+              {/* Display the list of comments */}
               <div className="comments-list">
                 <h3>Comments:</h3>
                 {comments.length > 0 ? (
@@ -113,17 +243,10 @@ function App() {
               </div>
             </div>
           </div>
-        ) : (
-          <div>
-            <h2>Please log in to leave a comment.</h2>
-            <button className="login-button" onClick={handleLogin}>
-              Login
-            </button>
-          </div>
-        )}
+        </div>
       </header>
     </div>
-  );
+  );   
 }
 
 export default App;
