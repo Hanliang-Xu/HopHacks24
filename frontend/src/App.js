@@ -24,7 +24,6 @@ const colors = [
   '#33FFF5'   // Color 6
 ];
 
-
 // Register the components you need
 ChartJS.register(
   CategoryScale,
@@ -36,17 +35,19 @@ ChartJS.register(
   Legend
 );
 
-
-
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user, isLoading, getAccessTokenSilently } = useAuth0();
   const [comments, setComments] = useState([]); // Store the list of comments
   const [newComment, setNewComment] = useState(''); // Track new comment input
   const [errorMessage, setErrorMessage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   // "Healthcare Coverage Based on Size of Metro"
   const [sizeOfMetro, setSizeOfMetro] = useState(null);
   const [racialDemographic, setRacialDemographic] = useState(null);
+  
+  // Track the selected chart from the dropdown
+  const [selectedChart, setSelectedChart] = useState('Urban County');
 
   // Trigger login with audience and scopes
   const handleLogin = () => {
@@ -58,7 +59,6 @@ function App() {
 
   // Handle comment submission
   const handleSubmitComment = async (e) => {
-    
     e.preventDefault();
     if (newComment.trim() === '') {
       setErrorMessage('Comment cannot be empty.');
@@ -93,7 +93,7 @@ function App() {
       console.error('Error submitting comment:', error);
     }
     setIsSubmitting(false);
-   };
+  };
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -117,20 +117,18 @@ function App() {
           let result = [...arr];  // Clone the array
           for (let i = 0; i < result.length; i++) {
             if (result[i] === '**') {
-              // Find the next valid data point for interpolation
               let nextValidIndex = i + 1;
               while (nextValidIndex < result.length && result[nextValidIndex] === '**') {
                 nextValidIndex++;
               }
-    
+
               if (nextValidIndex < result.length && i > 0) {
-                // Linear interpolation: y = y1 + ((y2 - y1) / (x2 - x1)) * (x - x1)
                 let y1 = +result[i - 1]; // Previous valid value
                 let y2 = +result[nextValidIndex]; // Next valid value
                 let x1 = i - 1; // Index of the previous valid value
                 let x2 = nextValidIndex; // Index of the next valid value
                 let interpolatedValue = y1 + ((y2 - y1) / (x2 - x1)) * (i - x1);
-    
+
                 result[i] = interpolatedValue; // Replace missing value with interpolated value
               }
             } else {
@@ -156,7 +154,6 @@ function App() {
       }
     };
 
-
     fetchCSVData("/urban_county.csv", setSizeOfMetro);
     fetchCSVData("/racial_demographic.csv", setRacialDemographic);
 
@@ -166,28 +163,39 @@ function App() {
     return <div>Loading...</div>;
   }
 
+  // Dropdown options to select between the charts
+  const handleChartChange = (e) => {
+    setSelectedChart(e.target.value);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <div className="content-container">
-          {/* Scrollable section for charts */}
-          <div className="charts-scrollable">
-            {/* First Chart - urban_county */}
-            <div className="chart-section">
-              <h2>Urban County</h2>
-              <Line data={sizeOfMetro} />
+
+          {/* Display the selected chart */}
+          <div className="chart-container">
+            {/* Flex container for dropdown and title */}
+            <div className="chart-header">
+              <div className="chart-selector">
+                <label htmlFor="chart-select">Choose a chart: </label>
+                <select id="chart-select" value={selectedChart} onChange={handleChartChange}>
+                  <option value="Urban County">Urban County</option>
+                  <option value="Racial Demographic">Racial Demographic</option>
+                </select>
+              </div>
+              <h2 className="chart-title">{selectedChart}</h2>
             </div>
-  
-            {/* Second Chart - racial_demographic */}
+
+            {/* Chart */}
             <div className="chart-section">
-              <h2>Racial Demographic</h2>
-              <Line data={racialDemographic} />
+              {selectedChart === 'Urban County' && <Line data={sizeOfMetro} />}
+              {selectedChart === 'Racial Demographic' && <Line data={racialDemographic} />}
             </div>
           </div>
   
           {/* Right column for user info and discussion */}
           <div className="discussion-column">
-            {/* Fixed button in the top-right corner */}
             <div className="user-info">
               {isAuthenticated ? (
                 <span>

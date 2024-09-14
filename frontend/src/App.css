@@ -8,15 +8,41 @@
   overflow-y: scroll; /* Scroll for the entire page */
 }
 
-/* Charts section - vertical stacking of charts */
-.charts-scrollable {
-  flex: 2;
-  overflow-y: auto;
-  padding-right: 20px; /* Space between charts and discussion */
+/* Container for chart and header with top margin and limited width */
+.chart-container {
+  width: 61.8%; /* Set the width to 61.8% of the screen */
+  margin: 50px auto 0 auto; /* Add top margin and center the container */
+  padding: 0;
 }
 
+/* Flexbox container to align dropdown and title */
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the title and dropdown */
+  gap: 20px; /* Space between dropdown and title */
+  margin-bottom: 20px; /* Space between the header and the chart */
+}
+
+/* Chart section should have no margin from the left */
 .chart-section {
-  margin-bottom: 40px; /* Add space between charts */
+  width: 100%;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+/* Style adjustments for the title */
+.chart-title {
+  margin: 0;
+  font-size: 32px; /* Increase font size */
+  font-weight: bold;
+  text-align: center; /* Ensure the title is centered */
+}
+
+/* Optional: Style adjustments for the dropdown */
+.chart-selector select {
+  padding: 5px;
+  font-size: 16px;
 }
 
 .discussion-column {
