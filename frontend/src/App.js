@@ -14,7 +14,7 @@ import {
   Legend,
 } from 'chart.js';
 import MapComponent from './MapComponent';  // Import the MapComponent
-
+import MyEditor from './MyEditor';
 
 const colors = [
   '#FF5733',  // Color 1
@@ -38,12 +38,10 @@ ChartJS.register(
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user, isLoading, getAccessTokenSilently } = useAuth0();
-  const [comments, setComments] = useState([]); // Store the list of comments
-  const [newComment, setNewComment] = useState(''); // Track new comment input
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // "Healthcare Coverage Based on Size of Metro"
   const [sizeOfMetro, setSizeOfMetro] = useState(null);
   const [racialDemographic, setRacialDemographic] = useState(null);
   const [sex, setSex] = useState(null);
@@ -51,7 +49,6 @@ function App() {
   // Track the selected chart from the dropdown
   const [selectedChart, setSelectedChart] = useState('Size of Metro');
 
-  // Trigger login with audience and scopes
   const handleLogin = () => {
     loginWithRedirect({
       audience: 'https://hophacks24.us.auth0.com/api/v2/',
@@ -59,14 +56,12 @@ function App() {
     });
   };
 
-  // Handle comment submission
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (newComment.trim() === '') {
       setErrorMessage('Comment cannot be empty.');
       return;
     }
-    if (newComment.trim() === '') return;
 
     setIsSubmitting(true);
    
@@ -89,7 +84,7 @@ function App() {
       const result = await response.json();
       setComments([...comments, result]);
       setNewComment('');
-      setErrorMessage(null); // Clear any previous error
+      setErrorMessage(null);
     } catch (error) {
       setErrorMessage('Failed to submit comment. Please try again.');
       console.error('Error submitting comment:', error);
@@ -100,7 +95,7 @@ function App() {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await fetch('http://localhost:5001/comments'); // Updated to match backend port
+        const response = await fetch('http://localhost:5001/comments');
         const result = await response.json();
         setComments(result);
       } catch (error) {
@@ -112,11 +107,11 @@ function App() {
 
     const fetchCSVData = async (filePath, setDataCallback) => {
       try {
-        const data = await readCSVFile(filePath); // Adjust file path
-        const years = data[0].slice(1); // First row is the years
+        const data = await readCSVFile(filePath);
+        const years = data[0].slice(1);
     
         const interpolateMissingValues = (arr) => {
-          let result = [...arr];  // Clone the array
+          let result = [...arr];
           for (let i = 0; i < result.length; i++) {
             if (result[i] === '**') {
               let nextValidIndex = i + 1;
@@ -125,26 +120,26 @@ function App() {
               }
 
               if (nextValidIndex < result.length && i > 0) {
-                let y1 = +result[i - 1]; // Previous valid value
-                let y2 = +result[nextValidIndex]; // Next valid value
-                let x1 = i - 1; // Index of the previous valid value
-                let x2 = nextValidIndex; // Index of the next valid value
+                let y1 = +result[i - 1];
+                let y2 = +result[nextValidIndex];
+                let x1 = i - 1;
+                let x2 = nextValidIndex;
                 let interpolatedValue = y1 + ((y2 - y1) / (x2 - x1)) * (i - x1);
 
-                result[i] = interpolatedValue; // Replace missing value with interpolated value
+                result[i] = interpolatedValue;
               }
             } else {
-              result[i] = +result[i]; // Convert valid values to numbers
+              result[i] = +result[i];
             }
           }
           return result;
         };
     
         const datasets = data.slice(1).map((row, index) => ({
-          label: row[0], // First column is the label (e.g., 'a', 'b', 'c')
-          data: interpolateMissingValues(row.slice(1)), // Interpolate missing values
-          borderColor: colors[index % colors.length], // Assign color based on index
-          fill: false,  // Ensure the line isn't filled
+          label: row[0],
+          data: interpolateMissingValues(row.slice(1)),
+          borderColor: colors[index % colors.length],
+          fill: false,
         }));
     
         setDataCallback({
@@ -166,9 +161,12 @@ function App() {
     return <div>Loading...</div>;
   }
 
-  // Dropdown options to select between the charts
   const handleChartChange = (e) => {
     setSelectedChart(e.target.value);
+  };
+
+  const handleEditorChange = (content) => {
+    setNewComment(content);
   };
 
   return (
@@ -178,7 +176,6 @@ function App() {
 
           {/* Display the selected chart */}
           <div className="chart-container">
-            {/* Flex container for dropdown and title */}
             <div className="chart-header">
               <div className="chart-selector">
                 <label htmlFor="chart-select">Choose a chart: </label>
@@ -191,7 +188,6 @@ function App() {
               <h2 className="chart-title">{selectedChart}</h2>
             </div>
 
-            {/* Chart */}
             <div className="chart-section">
               {selectedChart === 'Size of Metro' && <Line data={sizeOfMetro} />}
               {selectedChart === 'Racial Demographic' && <Line data={racialDemographic} />}
@@ -202,7 +198,6 @@ function App() {
             <MapComponent />
           </div>
   
-          {/* Right column for user info and discussion */}
           <div className="discussion-column">
             <div className="user-info">
               {isAuthenticated ? (
@@ -221,48 +216,32 @@ function App() {
                 </button>
               )}
             </div>
-  
-            {/* Discussion Forum below the button */}
+
             <div className="comment-section">
-              <h2>Discussion Forum</h2>
-              {errorMessage && <div className="error-message">{errorMessage}</div>}
-              {isAuthenticated ? (
-                <form onSubmit={handleSubmitComment}>
-                  <textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Enter your comment"
-                    rows="4"
-                    cols="50"
-                  />
-                  <br />
-                  <button type="submit" disabled={isSubmitting}>
-                    Submit Comment
-                  </button>
-                </form>
-              ) : (
-                <p>Please log in to leave a comment.</p>
-              )}
-  
-              {/* Display the list of comments */}
-              <div className="comments-list">
-                <h3>Comments:</h3>
-                {comments.length > 0 ? (
-                  comments.map((c, index) => (
-                    <div key={index}>
-                      <strong>{c.user}:</strong> {c.comment}
-                    </div>
-                  ))
-                ) : (
-                  <p>No comments yet. Be the first to comment!</p>
-                )}
-              </div>
+              <MyEditor
+                value={newComment}
+                onChange={handleEditorChange}
+              />
+              <form onSubmit={handleSubmitComment}>
+                <button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Submitting...' : 'Submit Comment'}
+                </button>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
+              </form>
+            </div>
+
+            <div className="comments-list">
+              {comments.map((comment, index) => (
+                <div key={index} className="comment">
+                  <strong>{comment.user}</strong>: <div dangerouslySetInnerHTML={{ __html: comment.comment }} />
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </header>
     </div>
-  );   
+  );
 }
 
 export default App;
