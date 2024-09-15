@@ -2,16 +2,16 @@
 .content-container {
   display: flex;
   justify-content: space-between;
-  width: 90%;
+  width: 95%;
   margin: auto;
   height: 100vh; /* Full screen height */
-  overflow-y: scroll; /* Scroll for the entire page */
+  gap: 30px; /* Add space between chart/map and discussion column */
 }
 
 /* Container for chart and header with top margin and limited width */
 .chart-container {
   width: 61.8%; /* Set the width to 61.8% of the screen */
-  margin: 50px auto 0 auto; /* Add top margin and center the container */
+  margin: 20px auto 0 auto; /* Add top margin and center the container */
   padding: 0;
 }
 
@@ -24,25 +24,21 @@
   margin-bottom: 20px; /* Space between the header and the chart */
 }
 
+/* Adjusted title font size */
+.chart-title {
+  margin: 0;
+  font-size: 24px; /* Adjusted to fit in one line */
+  font-weight: bold;
+  text-align: center; /* Ensure the title is centered */
+}
+
 /* Chart section should have no margin from the left */
 .chart-section {
   width: 100%;
   margin-left: 0;
   padding-left: 0;
-  margin-bottom: 20px;
-}
-
-.map-container {
-  height: 500px;
-  width: 100%;
-}
-
-/* Style adjustments for the title */
-.chart-title {
-  margin: 0;
-  font-size: 32px; /* Increase font size */
-  font-weight: bold;
-  text-align: center; /* Ensure the title is centered */
+  margin-bottom: 0;
+  height: 300px; /* Set chart height */
 }
 
 /* Optional: Style adjustments for the dropdown */
@@ -60,23 +56,6 @@
   max-height: 100vh; /* Limits the height */
 }
 
-.user-info {
-  margin-bottom: 20px;
-}
-
-.login-button, .logout-button {
-  padding: 10px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.login-button:hover, .logout-button:hover {
-  background-color: #0056b3;
-}
-
 .comment-section {
   background-color: #fff;
   color: #000;
@@ -86,7 +65,7 @@
   max-height: calc(100vh - 80px); /* Ensure comment section stays within view */
 }
 
-.comments-list{
+.comments-list {
   overflow-y: auto;
   max-height: 61vh; /* Ensure comments stay within view */
 }
@@ -102,11 +81,17 @@ button {
   padding: 10px;
 }
 
-.comment p
-{
+.comment p {
   margin: 0px;
 }
 
 .comment {
   margin: 0px 0px 10px 0px;
+}
+
+.chart-source {
+  font-size: 12px;
+  text-align: right;  /* Right-align the source text */
+  padding-top: 0;  /* Ensure no padding is added */
+  margin-left: auto;  /* Push the source to the right */
 }

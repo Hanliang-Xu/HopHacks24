@@ -1,9 +1,18 @@
+/* Adjust the timeline container and slider */
 .timeline-container {
   margin-bottom: 20px;
   text-align: center;
 }
 
 #year-slider {
-  width: 80%;
+  width: 100%;
   margin: 10px auto;
+}
+
+/* Legend title with smaller margins and font */
+.legend-header {
+  margin: 5px 0; /* Small margins */
+  font-size: 14px; /* Smaller font size */
+  line-height: 1.2; /* Reduce line height for the header */
+  text-align: left; /* Align the title to the left (optional) */
 }

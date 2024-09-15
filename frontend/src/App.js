@@ -165,9 +165,30 @@ function App() {
     setSelectedChart(e.target.value);
   };
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false, // Allows custom height
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Year'
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Percentage of Health Care Inaccessibility', // Y-axis label
+        },
+      },
+    },
+  };
+
   const handleEditorChange = (content) => {
     setNewComment(content);
   };
+
+  if (!sizeOfMetro) return <div>Loading...</div>;
 
   return (
     <div className="App">
@@ -185,13 +206,18 @@ function App() {
                   <option value="Sex">Sex</option>
                 </select>
               </div>
-              <h2 className="chart-title">{selectedChart}</h2>
+              <h2 className="chart-title">Percentage of Health Care Inaccessibility</h2>
             </div>
 
             <div className="chart-section">
-              {selectedChart === 'Size of Metro' && <Line data={sizeOfMetro} />}
-              {selectedChart === 'Racial Demographic' && <Line data={racialDemographic} />}
-              {selectedChart === 'Sex' && <Line data={sex} />}
+              {selectedChart === 'Size of Metro' && <Line data={sizeOfMetro} options={chartOptions} />}
+              {selectedChart === 'Racial Demographic' && <Line data={racialDemographic} options={chartOptions} />}
+              {selectedChart === 'Sex' && <Line data={sex} options={chartOptions} />}
+            </div>
+
+            {/* Source information */}
+            <div className="chart-source">
+              2011 Maryland Behavioral Risk Factor Surveillance System, accessed at <a href="https://ibis.health.maryland.gov">https://ibis.health.maryland.gov</a>.
             </div>
 
             {/* Map component, positioned below the chart */}
@@ -218,16 +244,19 @@ function App() {
             </div>
 
             <div className="comment-section">
-              <MyEditor
-                value={newComment}
-                onChange={handleEditorChange}
-              />
-              <form onSubmit={handleSubmitComment}>
-                <button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'Submitting...' : 'Submit Comment'}
-                </button>
-                {errorMessage && <p className="error-message">{errorMessage}</p>}
-              </form>
+              {isAuthenticated ? (
+                <>
+                  <MyEditor value={newComment} onChange={handleEditorChange} />
+                  <form onSubmit={handleSubmitComment}>
+                    <button type="submit" disabled={isSubmitting}>
+                      {isSubmitting ? 'Submitting...' : 'Submit Comment'}
+                    </button>
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
+                  </form>
+                </>
+              ) : (
+                <p>Please login to join the discussion.</p>
+              )}
             </div>
 
             <div className="comments-list">
