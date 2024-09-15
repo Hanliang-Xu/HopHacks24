@@ -74,10 +74,15 @@
 .comment-section {
   background-color: #fff;
   color: #000;
-  padding: 20px;
+  padding: 0px 0px 50px 0px;
   border-radius: 8px;
   overflow-y: auto;
   max-height: calc(100vh - 80px); /* Ensure comment section stays within view */
+}
+
+.comments-list{
+  overflow-y: auto;
+  max-height: 61vh; /* Ensure comments stay within view */
 }
 
 textarea {
@@ -89,4 +94,13 @@ textarea {
 button {
   margin-top: 10px;
   padding: 10px;
+}
+
+.comment p
+{
+  margin: 0px;
+}
+
+.comment {
+  margin: 0px 0px 10px 0px;
 }
