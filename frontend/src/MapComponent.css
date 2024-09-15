@@ -1,0 +1,9 @@
+.timeline-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#year-slider {
+  width: 80%;
+  margin: 10px auto;
+}

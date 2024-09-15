@@ -13,6 +13,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import MapComponent from './MapComponent';  // Import the MapComponent
 
 
 const colors = [
@@ -45,9 +46,10 @@ function App() {
   // "Healthcare Coverage Based on Size of Metro"
   const [sizeOfMetro, setSizeOfMetro] = useState(null);
   const [racialDemographic, setRacialDemographic] = useState(null);
+  const [sex, setSex] = useState(null);
   
   // Track the selected chart from the dropdown
-  const [selectedChart, setSelectedChart] = useState('Urban County');
+  const [selectedChart, setSelectedChart] = useState('Size of Metro');
 
   // Trigger login with audience and scopes
   const handleLogin = () => {
@@ -156,10 +158,11 @@ function App() {
 
     fetchCSVData("/urban_county.csv", setSizeOfMetro);
     fetchCSVData("/racial_demographic.csv", setRacialDemographic);
+    fetchCSVData("/sex.csv", setSex);
 
   }, [isLoading, isAuthenticated, user]);
 
-  if (isLoading || !sizeOfMetro || !racialDemographic) {
+  if (isLoading || !sizeOfMetro || !racialDemographic || !sex) {
     return <div>Loading...</div>;
   }
 
@@ -180,8 +183,9 @@ function App() {
               <div className="chart-selector">
                 <label htmlFor="chart-select">Choose a chart: </label>
                 <select id="chart-select" value={selectedChart} onChange={handleChartChange}>
-                  <option value="Urban County">Urban County</option>
+                  <option value="Size of Metro">Size of Metro</option>
                   <option value="Racial Demographic">Racial Demographic</option>
+                  <option value="Sex">Sex</option>
                 </select>
               </div>
               <h2 className="chart-title">{selectedChart}</h2>
@@ -189,9 +193,13 @@ function App() {
 
             {/* Chart */}
             <div className="chart-section">
-              {selectedChart === 'Urban County' && <Line data={sizeOfMetro} />}
+              {selectedChart === 'Size of Metro' && <Line data={sizeOfMetro} />}
               {selectedChart === 'Racial Demographic' && <Line data={racialDemographic} />}
+              {selectedChart === 'Sex' && <Line data={sex} />}
             </div>
+
+            {/* Map component, positioned below the chart */}
+            <MapComponent />
           </div>
   
           {/* Right column for user info and discussion */}
