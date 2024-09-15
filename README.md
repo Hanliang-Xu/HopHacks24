@@ -4,21 +4,21 @@ We started with a desire to visualize data to help create good in the world. We 
 We knew the Maryland Department of Health had a Dashboard for the opioid crisis, but it seemed they had not created more dashboards for other essential health issues. When considering the data available from the Maryland Department of Health, we chose to focus on Health Care Access because a person's ability to access health care shapes their health outcomes no matter the illness they face. Thus, we felt that using our skills to advocate for more health access was a way to maximize improved health outcomes in Maryland. 
 
 ## What it does
-We hope that this website will allow voters to engage with health care access for their state and interact with each other and legislatures to advance health care access for the least vulnerable. To this end, we have a drop-down menu where people can look at how different demographics impact access to healthcare. We also have a map to allow people to visually see how access to health care has changed over time, and we have a discussion form to initiate conversations around this topic. The project aims to foster engagement between voters, policymakers, and other stakeholders. The ultimate goal is to drive positive legislative and community-level action to improve healthcare access, especially for marginalized populations.
+This website allows voters to engage with health care access for their state and interact with each other and legislatures to advance health care access for the least vulnerable. To this end, we have a drop-down menu where users can look at how different demographics impact access to healthcare. We also have a map to allow people to visually see how access to health care has changed over time, and we have a discussion forum to initiate conversations around this topic. The project aims to foster engagement between voters, policymakers, and other stakeholders. The ultimate goal is to drive positive legislative and community-level action to improve healthcare access, especially for marginalized populations.
 
 ## Key Features
 - **Interactive Map Visualization**  
-  The core feature of *Untitled* is its interactive map that visualizes healthcare access across Maryland's regions.  
+  - The core feature of *Untitled* is its interactive map that visualizes healthcare access across Maryland's regions.  
   - Users can view changes in healthcare access over time (from 2011 to 2022), observing trends and patterns in access disparity.
   - Each region is color-coded based on access levels, with darker colors indicating worse access and lighter colors representing better access.
 - **Demographic Filters**  
-  The platform allows users to explore healthcare access data based on various demographic categories, such as:  
+  - The platform allows users to explore healthcare access data based on various demographic categories, such as:  
   - Race
   - Gender
   - Size of Metro
-  These filters provide insights into how different populations experience healthcare access, highlighting disparities such as the significant gap among Hispanic communities and gender-based differences.
+  - These filters provide insights into how different populations experience healthcare access, highlighting disparities such as the significant gap among Hispanic communities and gender-based differences.
 - **Discussion Forum**  
-  The website includes a discussion forum where users can:  
+  - The website includes a discussion forum where users can:  
   - Post comments, suggestions, or personal stories related to healthcare access.  
   - Engage in constructive dialogue with policymakers, community leaders, and the public about healthcare challenges and propose solutions.
 
@@ -42,15 +42,15 @@ We got the data from the **Maryland Department of Health Query System** ([link](
   - The backend API provides **endpoints for dynamically retrieving data** by region, year, and demographic category, enabling the frontend to make real-time requests as users interact with the website.
 
 ## Challenges we ran into
-## Data Acquisition and Processing:
+### Data Acquisition and Processing:
   - The Maryland Health query system was not optimal for finding the data, but we made it work! The queries were limited to drop-downs, so there was a lot of pre and post-processing to have easily visualizable data. 
 
-## Data Visualization Complexity:
+### Data Visualization Complexity:
   - Visualizing large amounts of data, especially across different demographic filters and time periods, presented challenges in performance and rendering.  
   - Ensuring smooth map interactions, particularly when switching between years or demographics, required optimizations in how data was loaded and displayed on the frontend.
   - Handling missing or inconsistent data (e.g., "N/A" or "**" entries) was another challenge that was addressed through robust error handling and default visual states.
 
-## Community Engagement:
+### Community Engagement:
   - Engaging a wide range of users, from everyday voters to policymakers, required the creation of a platform that balanced simplicity with depth.  
   - Ensuring that data was accessible to non-experts while still providing valuable insights to policymakers was a key design consideration.
 
@@ -61,15 +61,11 @@ We got the data from the **Maryland Department of Health Query System** ([link](
 ### Actionable Insights
   - Through data analysis, the team uncovered key disparities, such as:  
   - Higher rates of healthcare inaccessibility among Hispanic populations and men.  
-These insights can serve as focal points for future policy efforts.
+  - These insights can serve as focal points for future policy efforts.
 ### Scalable Data Infrastructure
   - The backend is built to handle additional data types and visualizations, meaning the platform can grow to include more health indicators and regions over time.
 
-## What we learned
-From our data, we learned that there is a significant health disparity among Hispanic people. They are consistently significantly higher than the other racial groups. We also learned that men have less access to health care than women. We hope our website highlights these health disparities and provides a platform for voters and legislatures to work together to change these trends. 
-
 ## Future Plans
-
 ### Expanding Data Sources:
   - The data presented is just a sampling of the available data. Our code for cleaning and analyzing data can be re-run to allow viewers to examine the problem of healthcare access from more angles.
   - The platform currently visualizes healthcare access, but there are many other health indicators that could be included in the future.  
