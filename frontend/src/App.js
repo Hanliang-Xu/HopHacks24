@@ -17,12 +17,12 @@ import MapComponent from './MapComponent';  // Import the MapComponent
 import MyEditor from './MyEditor';
 
 const colors = [
-  '#FF5733',  // Color 1
-  '#33FF57',  // Color 2
-  '#3357FF',  // Color 3
-  '#FF33A1',  // Color 4
-  '#A133FF',  // Color 5
-  '#33FFF5'   // Color 6
+  '#4E79A7',  // Soft blue
+  '#F28E2B',  // Soft orange
+  '#E15759',  // Soft red
+  '#76B7B2',  // Soft teal
+  '#59A14F',  // Soft green
+  '#EDC949'   // Soft yellow
 ];
 
 // Register the components you need
